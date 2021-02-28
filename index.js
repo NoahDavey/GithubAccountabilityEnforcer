@@ -2,6 +2,8 @@ require('dotenv').config()
 
 const express = require('express')
 const bodyParser = require('body-parser')
+const { sendTelegramMessage } = require('./sendTelegramMessage')
+
 const app = express()
 const port = 3000
 
@@ -14,11 +16,17 @@ app.get('/', (req, res) => {
 })
 
 app.post('/github', (req, res) => {
-    console.log('Webhook Endpoint has been hit------------');
-    console.log('Payload:');
+    console.log('Received paylod from Github ------------------------------');
     const payload = JSON.parse(req.body.payload)
-    console.log(payload);
-    
+
+    let message = "Today for the 100 days of code challenge I:\n"
+    for (const commit of payload.commits) {
+      message += `   Added commit: ${commit.message}\n`
+      message += `   Commit URL: ${commit.url}\n`
+      message += '\n'
+    }
+    sendTelegramMessage(message)
+
     res.status(200).send()
 })
 
