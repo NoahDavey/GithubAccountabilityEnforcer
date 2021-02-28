@@ -19,20 +19,15 @@ app.post('/github', (req, res) => {
     console.log('Received paylod from Github ------------------------------');
     const payload = JSON.parse(req.body.payload)
 
-    let message = "Today for the 100 days of code challenge I:\n"
+    let message = "My log for today:\n"
     for (const commit of payload.commits) {
-      message += `   Added commit: ${commit.message}\n`
-      message += `   Commit URL: ${commit.url}\n`
+      message += `-Added commit: ${commit.message}\n`
+      message += `-Commit URL: ${commit.url}\n`
       message += '\n'
     }
     sendTelegramMessage(message)
 
     res.status(200).send()
-})
-
-app.post('/telegram', (req, res) => {
-    console.log('Telegram endpoint has been hit! ');
-    console.log(req.body);
 })
 
 app.listen(port, () => {
