@@ -5,8 +5,14 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1"
   },
+  "engines": {
+    "node": "15.5.0"
+  },
   "scripts": {
     "start": "node index.js",
-    "start:dev": "nodemon index.js"
+    "start:dev": "nodemon index.js",
+    "localStaging": "heroku local web",
+    "deploy": "git push heroku main",
+    "openDeployed": "heroku open"
   }
 }
