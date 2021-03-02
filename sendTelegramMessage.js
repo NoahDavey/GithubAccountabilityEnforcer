@@ -13,14 +13,19 @@ async function sendTelegramMessage(message) {
         chat_id: myChat,
         text: message
     }
-
-    const result = await axios.post(
-        `${TELEGRAM_API_URL}/bot${TELEGRAM_BOT_AUTH_TOKEN}/sendMessage`,
-        requestData,
-        { headers: {'content-type': 'application/json'} }
+    
+    try {
+        const result = await axios.post(
+            `${TELEGRAM_API_URL}/bot${TELEGRAM_BOT_AUTH_TOKEN}/sendMessage`,
+            requestData,
+            { headers: {'content-type': 'application/json'} }
         )
-
-    console.log('...Successfully send message via telegram');
+        
+        console.log('...Successfully send message via telegram');
+    } catch (error) {
+        console.log('There was an error sending Telegram message:');
+        console.log(error);
+    }
 }
 
 module.exports = {
