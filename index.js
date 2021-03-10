@@ -38,13 +38,14 @@ app.post('/telegram', (req, res) => {
     console.log('Recieved payload from telegram: ');
     console.log(payload);
 
-    // const chatId = payload.message.chat.id
     // const name = payload.message.chat.username
+    const chatId = payload.message.chat.id
     const [entity] = payload.message.entities || [undefined]
     const text = payload.message.text
     if(entity?.type === 'bot_command') {
         console.log('Recieved bot command: ', text);
-        getUserRepos().then(r => console.log(r)).catch(e => console.log(e))
+        getUserRepos(chatId)
+            .catch(e => console.log(e))
     }
 
     // const requestData = {
