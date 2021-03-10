@@ -3,6 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const { sendTelegramMessage } = require('./sendTelegramMessage')
+const { getUserRepos } = require('./getUserRepos')
 const axios = require('axios')
 
 const app = express()
@@ -33,30 +34,35 @@ app.post('/github', (req, res) => {
 
 
 app.post('/telegram', (req, res) => {
-    console.log('Recieved message from telegram');
-    console.log(req.body);
-
     const payload = req.body 
-    const chatId = payload.message.chat.id
-    const name = payload.message.chat.username
-    console.log('Text', payload.message.text);
-    console.log('--UpdateID: ', payload.update_id);
+    console.log('Recieved payload from telegram: ');
+    console.log(payload);
 
-    const requestData = {
-        chat_id: chatId,
-        text: 'Hi There testing keyboard',
-        reply_to_message_id: true,
-        reply_markup: {
-            keyboard: [['Test 1'], ['Test 2'], ['Test 3']],
-            one_time_keyboard: true
-        }
+    // const chatId = payload.message.chat.id
+    // const name = payload.message.chat.username
+    const [entity] = payload.message.entities || [undefined]
+    const text = payload.message.text
+    if(entity?.type === 'bot_command') {
+        console.log('Recieved bot command: ', text);
+        getUserRepos().then(r => console.log(r)).catch(e => console.log(e))
     }
 
-    const result = axios.post(
-        `${process.env.TELEGRAM_API_URL}/bot${process.env.TELEGRAM_BOT_AUTH_TOKEN}/sendMessage`,
-        requestData,
-        { headers: {'content-type': 'application/json'} }
-    )
+    // const requestData = {
+    //     chat_id: chatId,
+    //     text: 'Hi There testing keyboard',
+    //     reply_to_message_id: true,
+    //     reply_markup: {
+    //         // keyboard: [['Test 1'], ['Test 2'], ['Test 3']],
+    //         // one_time_keyboard: true
+    //         hide_keyboard: true
+    //     }
+    // }
+
+    // const result = axios.post(
+    //     `${process.env.TELEGRAM_API_URL}/bot${process.env.TELEGRAM_BOT_AUTH_TOKEN}/sendMessage`,
+    //     requestData,
+    //     { headers: {'content-type': 'application/json'} }
+    // )
 
 
     res.status(200).send()
