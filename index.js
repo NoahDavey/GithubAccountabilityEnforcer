@@ -5,6 +5,8 @@ const bodyParser = require('body-parser')
 const { sendTelegramMessage } = require('./sendTelegramMessage')
 const { getUserRepos } = require('./getUserRepos')
 const axios = require('axios')
+const { CConsole } = require('./CConsole')
+const { setRepoWebhook } = require('./github')
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -32,7 +34,7 @@ app.post('/github', (req, res) => {
     res.status(200).send()
 })
 
-
+let waitingForCommandReply = false
 app.post('/telegram', (req, res) => {
     const payload = req.body 
     console.log('Recieved payload from telegram: ');
@@ -43,10 +45,22 @@ app.post('/telegram', (req, res) => {
     const [entity] = payload.message.entities || [undefined]
     const text = payload.message.text
     if(entity?.type === 'bot_command') {
-        console.log('Recieved bot command: ', text);
-        getUserRepos(chatId)
-            .catch(e => console.log(e))
+        console.log('Recieved bot command: ', text); 
+        if(text === '/subscribe_to_repo') {
+            getUserRepos(chatId)
+                .catch(e => console.log(e))
+                waitingForCommandReply = true
+        }
+    } else {
+        if(waitingForCommandReply) {
+            CConsole.success('Received response from user: ')
+            CConsole.info(JSON.stringify(payload, 2, 2))
+            setRepoWebhook('NoahDavey', text)
+            waitingForCommandReply = false
+        }
     }
+
+
 
     // const requestData = {
     //     chat_id: chatId,
@@ -68,7 +82,6 @@ app.post('/telegram', (req, res) => {
 
     res.status(200).send()
 })
-
 
 app.post('/testwebhook', (req, res) => {
     console.log('Request was made to test webhook!');
