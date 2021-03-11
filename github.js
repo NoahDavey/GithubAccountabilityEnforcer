@@ -1,14 +1,14 @@
 require('dotenv').config()
 const axios = require('axios')
 const { CConsole } = require('./CConsole')
-const BASE_URL = process.env.BASE_URL
+const BASE_URL = process.env.GITHUB_API_URL
 
 async function request(path, requestData) {
     CConsole.info('About to make request to the GithubAPI path: ' + path)
     const headerData = { headers: { 'Authorization': `Token ${process.env.GITHUB_ACCESS_TOKEN}` } }
     try {
         if(requestData) {
-            return await axios.get(`${BASE_URL}/${path}`, requestData, headerData)
+            return await axios.post(`${BASE_URL}/${path}`, requestData, headerData)
         } else {
             return await axios.get(`${BASE_URL}/${path}`, headerData)
         }
@@ -48,17 +48,9 @@ async function getUserRepos(chatId, githubUser = 'NoahDavey') {
 
 // Function used to create webhook for a given user & repo
 async function setRepoWebhook(githubUser, repoName) {
-    // const requestData  = { config: { url: process.env.TELEGRAM_WEBHOOK_IP } }
-    // const result = await request(`repos/${githubUser}/${repoName}/hooks`, requestData)
-    const result = await axios.post(
-        `https://api.github.com/repos/${githubUser}/${repoName}/hooks`, 
-        {
-            config: { url: process.env.GITHUB_WEBHOOK_IP }
-        },
-        {
-            headers: { 'Authorization': `Token ${process.env.GITHUB_ACCESS_TOKEN}` }
-        }
-    )
+    const requestData  = { config: { url: process.env.GITHUB_WEBHOOK_IP } }
+    const result = await request(`repos/${githubUser}/${repoName}/hooks`, requestData)
+    
     return result
 }
 
