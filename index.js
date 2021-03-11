@@ -3,10 +3,8 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const { sendTelegramMessage } = require('./sendTelegramMessage')
-const { getUserRepos } = require('./getUserRepos')
-const axios = require('axios')
 const { CConsole } = require('./CConsole')
-const { setRepoWebhook } = require('./github')
+const { setRepoWebhook, getUserRepos } = require('./github')
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -53,32 +51,11 @@ app.post('/telegram', (req, res) => {
         }
     } else {
         if(waitingForCommandReply) {
-            CConsole.success('Received response from user: ')
-            CConsole.info(JSON.stringify(payload, 2, 2))
+            CConsole.success('Received response from user from bot\'s question ')
             setRepoWebhook('NoahDavey', text)
             waitingForCommandReply = false
         }
     }
-
-
-
-    // const requestData = {
-    //     chat_id: chatId,
-    //     text: 'Hi There testing keyboard',
-    //     reply_to_message_id: true,
-    //     reply_markup: {
-    //         // keyboard: [['Test 1'], ['Test 2'], ['Test 3']],
-    //         // one_time_keyboard: true
-    //         hide_keyboard: true
-    //     }
-    // }
-
-    // const result = axios.post(
-    //     `${process.env.TELEGRAM_API_URL}/bot${process.env.TELEGRAM_BOT_AUTH_TOKEN}/sendMessage`,
-    //     requestData,
-    //     { headers: {'content-type': 'application/json'} }
-    // )
-
 
     res.status(200).send()
 })

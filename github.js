@@ -1,6 +1,7 @@
 require('dotenv').config()
 const axios = require('axios')
 const { CConsole } = require('./CConsole')
+const { sendTelegramMessage } = require('./sendTelegramMessage')
 const BASE_URL = process.env.GITHUB_API_URL
 
 async function request(path, requestData) {
@@ -13,10 +14,10 @@ async function request(path, requestData) {
             return await axios.get(`${BASE_URL}/${path}`, headerData)
         }
     } catch (error) {
-        CConsole.errorBg('')
-        CConsole.error('REQUEST ERROR...')
+        CConsole.errorBg('REQUEST ERROR...')
         console.log(error);
-        CConsole.errorBg('')
+        CConsole.errorBg('...END REQUEST ERROR')
+        throw error
     }
 }
 
@@ -49,9 +50,14 @@ async function getUserRepos(chatId, githubUser = 'NoahDavey') {
 // Function used to create webhook for a given user & repo
 async function setRepoWebhook(githubUser, repoName) {
     const requestData  = { config: { url: process.env.GITHUB_WEBHOOK_IP } }
-    const result = await request(`repos/${githubUser}/${repoName}/hooks`, requestData)
-    
-    return result
+    try {
+        const result = await request(`repos/${githubUser}/${repoName}/hooks`, requestData)
+        sendTelegramMessage(`Webhook has been set for: ${githubUser} on ${repoName}`)
+        return result
+    } catch (error) {
+        sendTelegramMessage('Failed to set webhook')
+        CConsole.error('Failed setting webhook')
+    }
 }
 
 
