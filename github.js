@@ -53,7 +53,7 @@ async function setRepoWebhook(githubUser, repoName) {
     const result = await axios.post(
         `https://api.github.com/repos/${githubUser}/${repoName}/hooks`, 
         {
-            config: { url: process.env.TELEGRAM_WEBHOOK_IP }
+            config: { url: process.env.GITHUB_WEBHOOK_IP }
         },
         {
             headers: { 'Authorization': `Token ${process.env.GITHUB_ACCESS_TOKEN}` }
