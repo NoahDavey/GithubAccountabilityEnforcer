@@ -19,10 +19,14 @@ app.get('/', (req, res) => {
 
 app.post('/github', (req, res) => {
     console.log('Received paylod from Github ------------------------------');
+    // const event = req.body
+    console.log(req.body)
     const payload = JSON.parse(req.body.payload)
-
+    // CConsole.warn(JSON.stringify(payload, 2, 2 ))
+    const [commits] = payload || []
+    
     let message = "My log for today:\n"
-    for (const commit of payload.commits) {
+    for (const commit of commits) {
       message += `-Added commit: ${commit.message}\n`
       message += `-Commit URL: ${commit.url}\n`
       message += '\n'
