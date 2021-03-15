@@ -1,66 +1,63 @@
-require('dotenv').config()
-const axios = require('axios')
-const BASE_URL = process.env.BASE_URL
-const REPO_NAME = process.env.REPO_NAME
-const GITHUB_USER = process.env.GITHUB_USER
+require('dotenv').config();
+const axios = require('axios');
+
+const { BASE_URL, REPO_NAME, GITHUB_USER } = process.env;
 
 async function request(path) {
-    return axios.get(`${BASE_URL}/${path}`, {
-        headers: { 'Authorization': `Token ${process.env.GITHUB_ACCESS_TOKEN}` }
-    })
+  return axios.get(`${BASE_URL}/${path}`, {
+    headers: { Authorization: `Token ${process.env.GITHUB_ACCESS_TOKEN}` },
+  });
 }
 
-
 async function getRepoDetails() {
-    const result = await request(`repos/${GITHUB_USER}/${REPO_NAME}`)
-    return result.data
+  const result = await request(`repos/${GITHUB_USER}/${REPO_NAME}`);
+  return result.data;
 }
 
 async function getRepoCommits() {
-    const result = await request(`repos/${GITHUB_USER}/${REPO_NAME}/commits`)
-    return result.data
+  const result = await request(`repos/${GITHUB_USER}/${REPO_NAME}/commits`);
+  return result.data;
 }
 
 async function main() {
-    console.log('About to make request >>>>>>>>>>>>>>>>');
-    
-    // const commits = await getRepoCommits()
+  console.log('About to make request >>>>>>>>>>>>>>>>');
 
-    // for (const commit of commits) {
-    //     console.log(commit.commit.message);
-    // }
+  // const commits = await getRepoCommits()
 
-    // const result = await request('users/NoahDavey/repos')
-    // // console.log(result.data);
+  // for (const commit of commits) {
+  //     console.log(commit.commit.message);
+  // }
 
-    // for(let repo of result.data) {
-    //     console.log('Repository: ' + repo.name);
-    //     console.log('Hook URL: ' + repo.hooks_url);
+  // const result = await request('users/NoahDavey/repos')
+  // // console.log(result.data);
 
-    //     // // Get repositories hooks
-    //     // const hooks = await axios.get(repo.hooks_url, {
-    //     //     headers: { 'Authorization': `Token ${process.env.GITHUB_ACCESS_TOKEN}` }
-    //     // })
-    //     // console.log(hooks.data);
-    // }
+  // for(let repo of result.data) {
+  //     console.log('Repository: ' + repo.name);
+  //     console.log('Hook URL: ' + repo.hooks_url);
 
-    // Create webhook
-    const result = await axios.post(
-        'https://api.github.com/repos/NoahDavey/Exercism/hooks', 
-        {
-            config: {
-                url: 'https://1b8ec7699160.ngrok.io/testwebhook'                
-            }
-        },
-        {
-            headers: { 'Authorization': `Token ${process.env.GITHUB_ACCESS_TOKEN}` }
-        }
-    )
+  //     // // Get repositories hooks
+  //     // const hooks = await axios.get(repo.hooks_url, {
+  //     //     headers: { 'Authorization': `Token ${process.env.GITHUB_ACCESS_TOKEN}` }
+  //     // })
+  //     // console.log(hooks.data);
+  // }
 
-    console.log(result);
+  // Create webhook
+  const result = await axios.post(
+    'https://api.github.com/repos/NoahDavey/Exercism/hooks',
+    {
+      config: {
+        url: 'https://1b8ec7699160.ngrok.io/testwebhook',
+      },
+    },
+    {
+      headers: { Authorization: `Token ${process.env.GITHUB_ACCESS_TOKEN}` },
+    },
+  );
 
+  console.log(result);
 
-    console.log('<<<<<<<<<<<<<< Got result');
+  console.log('<<<<<<<<<<<<<< Got result');
 }
 
-main()
+main();
