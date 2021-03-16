@@ -1,11 +1,11 @@
+import axios from 'axios';
+
 require('dotenv').config();
-const axios = require('axios');
 
-const { TELEGRAM_API_URL } = process.env;
-const { TELEGRAM_BOT_AUTH_TOKEN } = process.env;
 const myChat = '1333717959'; // The chat_id which telegram has given me & GithubAccountabilityBot
+const { TELEGRAM_API_URL, TELEGRAM_BOT_AUTH_TOKEN } = process.env;
 
-async function sendTelegramMessage(message) {
+async function sendTelegramMessage(message: string) {
   console.log('...About to send Telegram Message ');
 
   const requestData = {
@@ -14,7 +14,7 @@ async function sendTelegramMessage(message) {
   };
 
   try {
-    const result = await axios.post(
+    await axios.post(
       `${TELEGRAM_API_URL}/bot${TELEGRAM_BOT_AUTH_TOKEN}/sendMessage`,
       requestData,
       { headers: { 'content-type': 'application/json' } },
@@ -27,6 +27,4 @@ async function sendTelegramMessage(message) {
   }
 }
 
-module.exports = {
-  sendTelegramMessage,
-};
+export default sendTelegramMessage;

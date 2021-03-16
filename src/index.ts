@@ -1,10 +1,10 @@
-require('dotenv').config();
+import express from 'express';
+import bodyParser from 'body-parser';
+import sendTelegramMessage from './sendTelegramMessage';
+import CConsole from './CConsole';
+import { setRepoWebhook, getUserRepos } from './github';
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const { sendTelegramMessage } = require('./sendTelegramMessage');
-const { CConsole } = require('./CConsole');
-const { setRepoWebhook, getUserRepos } = require('./github');
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -50,7 +50,7 @@ app.post('/telegram', (req, res) => {
     console.log('Recieved bot command: ', text);
     if (text === '/subscribe_to_repo') {
       getUserRepos(chatId)
-        .catch((e) => console.log(e));
+        .catch((e: any) => console.log(e));
       waitingForCommandReply = true;
     }
   } else if (waitingForCommandReply) {

@@ -1,11 +1,12 @@
+import axios from 'axios';
+import CConsole from './CConsole';
+import sendTelegramMessage from './sendTelegramMessage';
+
 require('dotenv').config();
-const axios = require('axios');
-const { CConsole } = require('./CConsole');
-const { sendTelegramMessage } = require('./sendTelegramMessage');
 
 const BASE_URL = process.env.GITHUB_API_URL;
 
-async function request(path, requestData) {
+async function request(path: string, requestData: any | undefined) {
   CConsole.info(`About to make request to the GithubAPI path: ${path}`);
   const headerData = { headers: { Authorization: `Token ${process.env.GITHUB_ACCESS_TOKEN}` } };
   try {
@@ -21,21 +22,21 @@ async function request(path, requestData) {
   }
 }
 
-async function getUserRepos(chatId, githubUser = 'NoahDavey') {
-  const userRepos = await request(`users/${githubUser}/repos`);
+async function getUserRepos(chatId: string, githubUser = 'NoahDavey') {
+  const userRepos = await request(`users/${githubUser}/repos`, undefined);
 
   const requestData = {
     chat_id: chatId,
     text: `What repository of GithubUser ${githubUser} would you like to subscribe to?`,
     reply_to_message_id: true,
     reply_markup: {
-      keyboard: userRepos.data.map((repo) => [repo.name]), // [['repo1'], ['repo2]]
+      keyboard: userRepos.data.map((repo: any) => [repo.name]), // [['repo1'], ['repo2]]
       one_time_keyboard: true,
       // hide_keyboard: true
     },
   };
 
-  const result = axios.post(
+  await axios.post(
     `${process.env.TELEGRAM_API_URL}/bot${process.env.TELEGRAM_BOT_AUTH_TOKEN}/sendMessage`,
     requestData,
     { headers: { 'content-type': 'application/json' } },
@@ -45,7 +46,7 @@ async function getUserRepos(chatId, githubUser = 'NoahDavey') {
 }
 
 // Function used to create webhook for a given user & repo
-async function setRepoWebhook(githubUser, repoName) {
+async function setRepoWebhook(githubUser: string, repoName: string) {
   const requestData = { config: { url: process.env.GITHUB_WEBHOOK_IP } };
   try {
     const result = await request(`repos/${githubUser}/${repoName}/hooks`, requestData);
@@ -54,6 +55,7 @@ async function setRepoWebhook(githubUser, repoName) {
   } catch (error) {
     sendTelegramMessage('Failed to set webhook');
     CConsole.error('Failed setting webhook');
+    throw new Error('Failed to set Webhook');
   }
 }
 
@@ -65,7 +67,7 @@ async function setRepoWebhook(githubUser, repoName) {
 //         // console.log(hooks.data);
 // }
 
-module.exports = {
+export {
   getUserRepos,
   setRepoWebhook,
 };

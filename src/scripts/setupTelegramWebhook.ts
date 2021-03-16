@@ -1,5 +1,6 @@
+import axios from 'axios';
+
 require('dotenv').config();
-const axios = require('axios');
 
 const { TELEGRAM_WEBHOOK_IP, TELEGRAM_API_URL } = process.env;
 

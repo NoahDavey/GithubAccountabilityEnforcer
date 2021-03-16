@@ -1,9 +1,10 @@
+import axios from 'axios';
+
 require('dotenv').config();
-const axios = require('axios');
 
 const { BASE_URL, REPO_NAME, GITHUB_USER } = process.env;
 
-async function request(path) {
+async function request(path: string) {
   return axios.get(`${BASE_URL}/${path}`, {
     headers: { Authorization: `Token ${process.env.GITHUB_ACCESS_TOKEN}` },
   });

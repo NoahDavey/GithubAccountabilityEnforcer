@@ -1,5 +1,6 @@
+import axios from 'axios';
+
 require('dotenv').config();
-const axios = require('axios');
 
 const { TELEGRAM_API_URL, TELEGRAM_BOT_AUTH_TOKEN } = process.env;
 

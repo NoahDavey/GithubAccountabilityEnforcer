@@ -1,5 +1,6 @@
+import axios from 'axios';
+
 require('dotenv').config();
-const axios = require('axios');
 
 const { TELEGRAM_API_URL, TELEGRAM_BOT_AUTH_TOKEN } = process.env;
 
@@ -11,7 +12,7 @@ async function setBotCommands() {
   ];
 
   try {
-    const result = await axios.post(
+    await axios.post(
       `${TELEGRAM_API_URL}/bot${TELEGRAM_BOT_AUTH_TOKEN}/setMyCommands`,
       { commands: botCommands },
       { headers: { 'content-type': 'application/json' } },
@@ -25,7 +26,3 @@ async function setBotCommands() {
 }
 
 setBotCommands();
-
-// module.exports = {
-//     setBotCommands
-// }
